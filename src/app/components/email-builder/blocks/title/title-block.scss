@@ -1,0 +1,13 @@
+:host { display: block; }
+.title {
+  margin: 0;
+  line-height: 1.25;
+  white-space: pre-line;
+}
+
+@media (max-width: 600px) {
+  .title {
+    font-size: var(--mobile-font-size, inherit);
+    text-align: var(--mobile-align, inherit);
+  }
+}

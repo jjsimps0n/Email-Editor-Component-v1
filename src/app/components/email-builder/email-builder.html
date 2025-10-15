@@ -1,0 +1,357 @@
+<div class="builder" [class.preview]="mode === 'preview'">
+
+  @if (mode === 'editor') {
+    <aside class="left-sidebar">
+      <button class="icon-btn" [attr.data-tooltip]="t('leftbar.edit')" (click)="setMode('editor')">
+        <mat-icon>edit</mat-icon>
+      </button>
+      <button class="icon-btn" [attr.data-tooltip]="t('leftbar.preview')" (click)="setMode('preview')">
+        <mat-icon>visibility</mat-icon>
+      </button>
+      <button class="icon-btn" [attr.data-tooltip]="t('leftbar.clear')" (click)="clearAll()">
+        <mat-icon>delete</mat-icon>
+      </button>
+    </aside>
+  }
+
+  <main class="canvas" (click)="onCanvasClick()">
+
+    @if (mode === 'editor') {
+      <div class="rows">
+        @for (row of doc.rows; track trackRow($index, row)) {
+          <section
+            class="row"
+            [class.is-selected]="isRowSelected(row)"
+            (click)="selectRow(row.id); $event.stopPropagation()"
+            [ngStyle]="rowBoxStyle(row)">
+
+            @if (isRowSelected(row)) {
+              <div class="row-toolbar">
+                <button mat-icon-button [disabled]="!canMoveRowUp" (click)="moveSelectedRowUp(); $event.stopPropagation()">
+                  <mat-icon>arrow_upward</mat-icon>
+                </button>
+                <button mat-icon-button [disabled]="!canMoveRowDown" (click)="moveSelectedRowDown(); $event.stopPropagation()">
+                  <mat-icon>arrow_downward</mat-icon>
+                </button>
+                <button mat-icon-button (click)="deleteRow(row.id); $event.stopPropagation()">
+                  <mat-icon>delete</mat-icon>
+                </button>
+              </div>
+            }
+
+            <div class="row-grid" [style.gridTemplateColumns]="gridTemplateFor(row)">
+              @for (col of row.columns; track trackCol($index, col)) {
+                <div
+                  class="col"
+                  [class.is-selected]="isColSelected(col)"
+                  (click)="selectColumn(col.id, row.id); $event.stopPropagation()">
+
+                  <div class="col-inner">
+                    @if (!col.blocks.length) {
+                      <div class="col-placeholder">
+                        <mat-icon>add</mat-icon>
+                        <span>{{ t('canvas.addFromRight') }}</span>
+                      </div>
+                    }
+
+                    @for (b of col.blocks; track trackBlock($index, b)) {
+                      <div
+                        class="block"
+                        [class.is-selected]="isBlockSelected(b)"
+                        (click)="selectBlock(b.id, col.id, row.id); $event.stopPropagation()"
+                        [ngStyle]="blockBoxStyle(b)">
+
+                        @if (isTitle(b)) {
+                          <app-title-block [data]="b.data"></app-title-block>
+                        } @else if (isParagraph(b)) {
+                          <app-paragraph-block [data]="b.data"></app-paragraph-block>
+                        } @else if (isButton(b)) {
+                          <app-button-block [data]="b.data"></app-button-block>
+                        }
+
+                      </div>
+                    }
+                  </div>
+                </div>
+              }
+            </div>
+          </section>
+        }
+      </div>
+
+    } @else {
+      <div class="preview-wrap" (click)="$event.stopPropagation()">
+        <div class="preview-bar">
+          <div class="bar-left">
+            <mat-icon>visibility</mat-icon>
+            <div class="title">{{ t('preview.title') }}</div>
+          </div>
+
+          <div class="bar-center">
+            <div class="grp">
+              <button mat-icon-button (click)="presetMobileNarrow()" [title]="t('preview.presets.mobileNarrow')">
+                <mat-icon>stay_primary_portrait</mat-icon>
+              </button>
+              <button mat-icon-button (click)="presetIPhone12()" [title]="t('preview.presets.iphone12')">
+                <mat-icon>phone_iphone</mat-icon>
+              </button>
+              <button mat-icon-button (click)="presetTablet()" [title]="t('preview.presets.tablet')">
+                <mat-icon>tablet</mat-icon>
+              </button>
+              <button mat-icon-button (click)="presetEmailWidth()" [title]="t('preview.presets.emailWidth')">
+                <mat-icon>view_week</mat-icon>
+              </button>
+              <button mat-icon-button (click)="presetDesktop()" [title]="t('preview.presets.desktop')">
+                <mat-icon>desktop_windows</mat-icon>
+              </button>
+            </div>
+
+            <div class="grp size">
+              <input class="size-input" type="number" [(ngModel)]="previewW" (blur)="setPreviewSize(previewW, previewH)">
+              <span>×</span>
+              <input class="size-input" type="number" [(ngModel)]="previewH" (blur)="setPreviewSize(previewW, previewH)">
+            </div>
+          </div>
+
+          <button mat-icon-button aria-label="{{ t('preview.close') }}" (click)="setMode('editor')">
+            <mat-icon>close</mat-icon>
+          </button>
+        </div>
+
+        <iframe
+          title="Email preview"
+          [style.width.px]="previewW"
+          [style.height.px]="previewH"
+          [srcdoc]="safePreviewHtml">
+        </iframe>
+      </div>
+    }
+  </main>
+
+  @if (mode === 'editor') {
+    <aside class="right-sidebar">
+
+      <div class="tabs">
+        <button class="tab" [class.active]="tab==='content'" (click)="setTab('content')">
+          {{ t('tabs.content') }}
+        </button>
+        <button class="tab" [class.active]="tab==='rows'" (click)="setTab('rows')">
+          {{ t('tabs.rows') }}
+        </button>
+        <button class="tab" [class.active]="tab==='settings'" (click)="setTab('settings')">
+          {{ t('tabs.settings') }}
+        </button>
+      </div>
+
+      @if (tab === 'content') {
+        <div class="panel">
+          <div class="panel-hint">
+            <mat-icon>info</mat-icon>
+            <div>{{ t('content.hintSelectColumn') }}</div>
+          </div>
+
+          <div class="grid">
+            <button class="tile" (click)="addBlockToSelected('title')" [disabled]="!selectedColId">
+              <div class="tile-icon"><mat-icon>title</mat-icon></div>
+              <div class="tile-label">{{ t('content.blocks.title') }}</div>
+            </button>
+
+            <button class="tile" (click)="addBlockToSelected('paragraph')" [disabled]="!selectedColId">
+              <div class="tile-icon"><mat-icon>subject</mat-icon></div>
+              <div class="tile-label">{{ t('content.blocks.paragraph') }}</div>
+            </button>
+
+            <button class="tile" (click)="addBlockToSelected('button')" [disabled]="!selectedColId">
+              <div class="tile-icon"><mat-icon>outbond</mat-icon></div>
+              <div class="tile-label">{{ t('content.blocks.button') }}</div>
+            </button>
+          </div>
+        </div>
+      }
+
+      @if (tab === 'rows') {
+        <div class="panel rows-panel">
+          <div class="grid">
+            <button class="tile" (click)="addRow(1)">
+              <div class="tile-icon"><mat-icon>view_stream</mat-icon></div>
+              <div class="tile-label">{{ t('rows.one') }}</div>
+            </button>
+
+            <button class="tile" (click)="addRow(2)">
+              <div class="tile-icon"><mat-icon>view_column</mat-icon></div>
+              <div class="tile-label">{{ t('rows.two') }}</div>
+            </button>
+
+            <button class="tile" (click)="addRow(3)">
+              <div class="tile-icon"><mat-icon>grid_view</mat-icon></div>
+              <div class="tile-label">{{ t('rows.three') }}</div>
+            </button>
+
+            <button class="tile" (click)="addRow(4)">
+              <div class="tile-icon"><mat-icon>dashboard</mat-icon></div>
+              <div class="tile-label">{{ t('rows.four') }}</div>
+            </button>
+          </div>
+        </div>
+      }
+
+      @if (tab === 'settings') {
+        <div class="panel">
+
+          @let selRow = getSelectedRow();
+          @if (selRow && !selectedBlockId) {
+
+            <div class="panel-bar">
+              <button class="text-btn" [disabled]="!canMoveRowUp" (click)="moveSelectedRowUp()">
+                <mat-icon>arrow_upward</mat-icon>
+              </button>
+              <button class="text-btn" [disabled]="!canMoveRowDown" (click)="moveSelectedRowDown()">
+                <mat-icon>arrow_downward</mat-icon>
+              </button>
+              <span class="spacer"></span>
+              <button class="text-btn danger" (click)="deleteRow(selRow.id)">
+                <mat-icon>delete</mat-icon>
+              </button>
+            </div>
+
+            <details class="section"
+                     [attr.open]="rowPanels.rowOpen ? '' : null"
+                     (toggle)="onPanelToggle('rowOpen', $event)">
+              <summary class="edit-section-title">{{ t('settings.row.title') }}</summary>
+
+              <div class="form-grid">
+                <div class="field">
+                  <label class="label">{{ t('settings.row.bgColor') }}</label>
+                  <div class="color-combo">
+                    <input class="chip" type="color" [(ngModel)]="selRow.bgColor">
+                    <input class="hex" type="text" [(ngModel)]="selRow.bgColor" placeholder="(none)">
+                  </div>
+                </div>
+
+                <div class="field">
+                  <label class="label">{{ t('settings.row.padding') }}</label>
+                  <input class="text-input small" type="number" min="0" [(ngModel)]="selRow.padding">
+                </div>
+
+                <div class="field">
+                  <label class="label">{{ t('settings.row.gutter') }}</label>
+                  <input class="text-input small" type="number" min="0" [(ngModel)]="selRow.gutter">
+                </div>
+
+                <div class="field">
+                  <label class="label">{{ t('settings.row.borderWidth') }}</label>
+                  <input class="text-input small" type="number" min="0" [(ngModel)]="selRow.borderWidth">
+                </div>
+
+                <div class="field">
+                  <label class="label">{{ t('settings.row.borderRadius') }}</label>
+                  <input class="text-input small" type="number" min="0" [(ngModel)]="selRow.borderRadius">
+                </div>
+
+                <div class="field">
+                  <label class="label">{{ t('settings.row.borderColor') }}</label>
+                  <div class="color-combo">
+                    <input class="chip" type="color" [(ngModel)]="selRow.borderColor">
+                    <input class="hex" type="text" [(ngModel)]="selRow.borderColor" placeholder="#e5e7eb">
+                  </div>
+                </div>
+              </div>
+            </details>
+
+          } @else {
+            @let sb = getSelectedBlock();
+            @if (sb) {
+
+              <div class="panel-bar">
+                <button class="text-btn" [disabled]="!canMoveUp" (click)="moveSelectedBlockUp()">
+                  <mat-icon>arrow_upward</mat-icon>
+                </button>
+                <button class="text-btn" [disabled]="!canMoveDown" (click)="moveSelectedBlockDown()">
+                  <mat-icon>arrow_downward</mat-icon>
+                </button>
+                <span class="spacer"></span>
+                <button class="text-btn" [disabled]="!canMoveDown" (click)="moveSelectedBlockDown()">
+                  <mat-icon>content_copy</mat-icon>
+                </button>
+                <button class="text-btn danger" (click)="deleteSelectedBlock()">
+                  <mat-icon>delete</mat-icon>
+                </button>
+              </div>
+
+              @let ps = panelStateForSelected();
+
+              <details class="section compact-editor"
+                       [attr.open]="ps?.propsOpen ? '' : null"
+                       (toggle)="onPanelToggle('propsOpen', $event)">
+                <summary class="edit-section-title">
+                  @if (isTitle(sb)) { {{ t('settings.title.props') }} }
+                  @else if (isParagraph(sb)) { {{ t('settings.paragraph.props') }} }
+                  @else if (isButton(sb)) { {{ t('settings.button.props') }} }
+                </summary>
+
+                @if (selectedTitleBlock)   { <app-title-editor     [data]="selectedTitleBlock.data"></app-title-editor> }
+                @if (selectedParagraphBlock){ <app-paragraph-editor [data]="selectedParagraphBlock.data"></app-paragraph-editor> }
+                @if (selectedButtonBlock)  { <app-button-editor    [data]="selectedButtonBlock.data"></app-button-editor> }
+              </details>
+
+              <details class="section"
+                       [attr.open]="ps?.boxOpen ? '' : null"
+                       (toggle)="onPanelToggle('boxOpen', $event)">
+                <summary class="edit-section-title">{{ t('settings.block.title') }}</summary>
+
+                <div class="form-grid">
+                  <div class="field">
+                    <label class="label">{{ t('settings.block.bgColor') }}</label>
+                    <div class="color-combo">
+                      <input class="chip" type="color" [(ngModel)]="sb.data.blockBgColor">
+                      <input class="hex" type="text" [(ngModel)]="sb.data.blockBgColor" placeholder="(none)">
+                    </div>
+                  </div>
+
+                  <div class="field">
+                    <label class="label">{{ t('settings.block.padding') }}</label>
+                    <input class="text-input small" type="number" min="0" [(ngModel)]="sb.data.blockPadding">
+                  </div>
+
+                  <div class="field">
+                    <label class="label">{{ t('settings.block.marginTop') }}</label>
+                    <input class="text-input small" type="number" min="0" [(ngModel)]="sb.data.marginTop">
+                  </div>
+
+                  <div class="field">
+                    <label class="label">{{ t('settings.block.marginBottom') }}</label>
+                    <input class="text-input small" type="number" min="0" [(ngModel)]="sb.data.marginBottom">
+                  </div>
+
+                  <div class="field">
+                    <label class="label">{{ t('settings.block.borderWidth') }}</label>
+                    <input class="text-input small" type="number" min="0" [(ngModel)]="sb.data.blockBorderWidth">
+                  </div>
+
+                  <div class="field">
+                    <label class="label">{{ t('settings.block.borderRadius') }}</label>
+                    <input class="text-input small" type="number" min="0" [(ngModel)]="sb.data.blockBorderRadius">
+                  </div>
+
+                  <div class="field">
+                    <label class="label">{{ t('settings.block.borderColor') }}</label>
+                    <div class="color-combo">
+                      <input class="chip" type="color" [(ngModel)]="sb.data.blockBorderColor">
+                      <input class="hex" type="text" [(ngModel)]="sb.data.blockBorderColor" placeholder="#e5e7eb">
+                    </div>
+                  </div>
+                </div>
+              </details>
+
+            } @else {
+              <div class="panel-hint">
+                <mat-icon>info</mat-icon>
+                <div>{{ t('content.hintSelectColumn') }}</div>
+              </div>
+            }
+          }
+        </div>
+      }
+    </aside>
+  }
+</div>

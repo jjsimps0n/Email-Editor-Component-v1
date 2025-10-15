@@ -1,0 +1,11 @@
+<div class="paragraph"
+     [style.white-space]="'pre-wrap'"
+     [ngStyle]="{
+       'text-align': data.align,
+       'font-size.px': data.fontSize,
+       'line-height': data.lineHeight,
+       'text-transform': data.textTransform,
+       'font-family': fontStack(data.fontFamilyKey)
+     }"
+     [innerHTML]="safeHtml">
+</div>

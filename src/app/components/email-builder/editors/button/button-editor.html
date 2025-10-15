@@ -1,0 +1,145 @@
+
+<div class="form-grid">
+
+  <div class="field">
+    <label class="label">Label</label>
+    <input class="text-input" type="text" [(ngModel)]="data.label" placeholder="Buy now" />
+  </div>
+
+
+  <div class="field">
+    <label class="label">URL</label>
+    <input class="text-input" type="url" [(ngModel)]="data.url" placeholder="https://example.com" />
+  </div>
+
+
+  <div class="field">
+    <label class="label">Align</label>
+    <div class="seg">
+      <button class="seg-btn mat-mdc-icon-button"
+              [class.on]="data.align==='left'"
+              (click)="data.align='left'" aria-label="Align left">
+        <mat-icon>format_align_left</mat-icon>
+      </button>
+      <button class="seg-btn mat-mdc-icon-button"
+              [class.on]="data.align==='center'"
+              (click)="data.align='center'" aria-label="Align center">
+        <mat-icon>format_align_center</mat-icon>
+      </button>
+      <button class="seg-btn mat-mdc-icon-button"
+              [class.on]="data.align==='right'"
+              (click)="data.align='right'" aria-label="Align right">
+        <mat-icon>format_align_right</mat-icon>
+      </button>
+    </div>
+  </div>
+
+
+  <div class="field">
+    <label class="label">Full width</label>
+    <label class="switch-inline">
+      <input type="checkbox" [(ngModel)]="data.fullWidth" />
+      <span>Fill column</span>
+    </label>
+  </div>
+
+
+  <div class="field">
+    <label class="label">Text style</label>
+    <div class="seg">
+      <button class="seg-btn mat-mdc-icon-button"
+              [class.on]="data.bold" (click)="data.bold=!data.bold" aria-label="Bold">
+        <mat-icon>format_bold</mat-icon>
+      </button>
+      <button class="seg-btn mat-mdc-icon-button"
+              [class.on]="data.uppercase" (click)="data.uppercase=!data.uppercase" aria-label="Uppercase">
+        <mat-icon>format_size</mat-icon>
+      </button>
+    </div>
+  </div>
+
+
+  <div class="field">
+    <label class="label">Text color</label>
+    <div class="color-combo">
+      <input class="chip" type="color" [(ngModel)]="data.textColor" />
+      <input class="hex" type="text" [(ngModel)]="data.textColor" placeholder="#ffffff" />
+    </div>
+  </div>
+
+
+  <div class="field">
+    <label class="label">Background</label>
+    <div class="color-combo">
+      <input class="chip" type="color" [(ngModel)]="data.bgColor" />
+      <input class="hex" type="text" [(ngModel)]="data.bgColor" placeholder="#2563eb" />
+    </div>
+  </div>
+
+
+  <div class="field">
+    <label class="label">Border color</label>
+    <div class="color-combo">
+      <input class="chip" type="color" [(ngModel)]="data.borderColor" />
+      <input class="hex" type="text" [(ngModel)]="data.borderColor" placeholder="#2563eb" />
+    </div>
+  </div>
+
+
+  <div class="field">
+    <label class="label">Border width (px)</label>
+    <input class="text-input" type="number" min="0" max="8" [(ngModel)]="data.borderWidth" />
+  </div>
+
+
+  <div class="field">
+    <label class="label">Border radius (px)</label>
+    <input class="text-input" type="number" min="0" max="32" [(ngModel)]="data.borderRadius" />
+  </div>
+
+
+  <div class="field">
+    <label class="label">Letter spacing (px)</label>
+    <input class="text-input" type="number" step="0.5" min="0" max="5" [(ngModel)]="data.letterSpacing" />
+  </div>
+
+  <div class="field">
+    <label class="label">Padding X (px)</label>
+    <input class="text-input" type="number" min="6" max="40" [(ngModel)]="data.paddingX" />
+  </div>
+
+  <div class="field">
+    <label class="label">Padding Y (px)</label>
+    <input class="text-input" type="number" min="4" max="24" [(ngModel)]="data.paddingY" />
+  </div>
+
+  <div class="field">
+    <label class="label">Font family</label>
+    <select class="text-input" [(ngModel)]="data.fontFamilyKey">
+      <option *ngFor="let f of fontOptions" [ngValue]="f.key">{{ f.label }}</option>
+    </select>
+  </div>
+
+  <div class="field">
+    <label class="label">Block padding (px)</label>
+    <input class="text-input" type="number" min="0" max="64" [(ngModel)]="data.blockPadding" />
+  </div>
+
+  <div class="field">
+    <label class="label">Block background</label>
+    <div class="color-combo">
+      <input class="chip" type="color" [(ngModel)]="data.blockBgColor" />
+      <input class="hex" type="text" [(ngModel)]="data.blockBgColor" placeholder="(none)" />
+    </div>
+  </div>
+
+  <div class="field">
+    <label class="label">Margin top (px)</label>
+    <input class="text-input" type="number" min="0" max="100" [(ngModel)]="data.marginTop" />
+  </div>
+
+  <div class="field">
+    <label class="label">Margin bottom (px)</label>
+    <input class="text-input" type="number" min="0" max="100" [(ngModel)]="data.marginBottom" />
+  </div>
+</div>

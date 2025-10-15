@@ -1,0 +1,172 @@
+
+<ng-container *ngIf="mode === 'default'; else floatMode">
+  <div class="rte-root">
+    <div class="rte-toolbar">
+      <button class="icon" title="Undo" (click)="exec('undo')"><mat-icon>undo</mat-icon></button>
+      <button class="icon" title="Redo" (click)="exec('redo')"><mat-icon>redo</mat-icon></button>
+      <button class="icon" title="Print" (click)="print()"><mat-icon>print</mat-icon></button>
+
+      <div class="divider"></div>
+
+      <div class="field">
+        <select class="block-select" [value]="currentFormatBlock" (change)="setBlock($any($event.target).value)">
+          <option value="p">Paragraph text</option>
+          <option value="h1">Heading 1</option>
+          <option value="h2">Heading 2</option>
+          <option value="h3">Heading 3</option>
+          <option value="blockquote">Blockquote</option>
+        </select>
+      </div>
+
+      <div class="field">
+        <button class="mini" title="Smaller text" (click)="decBaseFont()">–</button>
+        <span class="mini-readout">{{ baseFontPx }}px</span>
+        <button class="mini" title="Larger text" (click)="incBaseFont()">+</button>
+      </div>
+
+      <div class="divider"></div>
+
+      <button class="icon" title="Bold" (click)="exec('bold')"><mat-icon>format_bold</mat-icon></button>
+      <button class="icon" title="Italic" (click)="exec('italic')"><mat-icon>format_italic</mat-icon></button>
+      <button class="icon" title="Underline" (click)="exec('underline')"><mat-icon>format_underlined</mat-icon></button>
+      <button class="icon" title="Strikethrough" (click)="exec('strikeThrough')"><mat-icon>strikethrough_s</mat-icon></button>
+
+      <div class="divider"></div>
+
+      <button class="icon" title="Bulleted list" (click)="exec('insertUnorderedList')">
+        <mat-icon>format_list_bulleted</mat-icon>
+      </button>
+      <button class="icon" title="Numbered list" (click)="exec('insertOrderedList')">
+        <mat-icon>format_list_numbered</mat-icon>
+      </button>
+      <button class="icon" title="Outdent" (click)="exec('outdent')"><mat-icon>format_indent_decrease</mat-icon></button>
+      <button class="icon" title="Indent" (click)="exec('indent')"><mat-icon>format_indent_increase</mat-icon></button>
+
+      <div class="divider"></div>
+
+      <button class="icon" title="Align left" (click)="exec('justifyLeft')"><mat-icon>format_align_left</mat-icon></button>
+      <button class="icon" title="Align center" (click)="exec('justifyCenter')"><mat-icon>format_align_center</mat-icon></button>
+      <button class="icon" title="Align right" (click)="exec('justifyRight')"><mat-icon>format_align_right</mat-icon></button>
+      <button class="icon" title="Justify" (click)="exec('justifyFull')"><mat-icon>format_align_justify</mat-icon></button>
+
+      <div class="divider"></div>
+
+      <label class="swatch" title="Text color">
+        <input type="color" (change)="exec('foreColor', $any($event.target).value)">
+      </label>
+      <label class="swatch" title="Highlight color">
+        <input type="color" (change)="exec('hiliteColor', $any($event.target).value)">
+      </label>
+
+      <div class="divider"></div>
+
+      <button class="icon" title="Insert link" (click)="makeLink()"><mat-icon>link</mat-icon></button>
+      <label class="icon filelike" title="Insert image">
+        <mat-icon>image</mat-icon>
+        <input type="file" accept="image/*" (change)="onImagePicked($event)">
+      </label>
+
+      <div class="flex-spacer"></div>
+    </div>
+
+    <div
+      #editor
+      class="rte-surface"
+      [attr.contenteditable]="!preview"
+      [class.preview]="preview"
+      (paste)="onPaste($event)"
+      (input)="onInput()"
+      (keyup)="onInput()"
+      [attr.data-placeholder]="placeholder"
+      spellcheck="true"
+    ></div>
+
+    <div class="rte-footer">
+      <div>{{ wordCount }} words</div>
+      <div class="muted">{{ charCount }} characters</div>
+
+      <button class="mini ghost footer-preview" (click)="togglePreview()">
+        {{ preview ? 'Exit Preview' : 'Preview' }}
+      </button>
+    </div>
+  </div>
+</ng-container>
+
+<ng-template #floatMode>
+  <div
+    #floatTb
+    class="float-toolbar"
+    *ngIf="showFloatToolbar"
+    [style.left.px]="floatX"
+    [style.top.px]="floatY"
+    (mousedown)="onFloatToolbarMouseDown($event)"
+  >
+    <button class="tbtn" title="Bold" (click)="exec('bold')"><mat-icon>format_bold</mat-icon></button>
+    <button class="tbtn" title="Italic" (click)="exec('italic')"><mat-icon>format_italic</mat-icon></button>
+    <button class="tbtn" title="Underline" (click)="exec('underline')"><mat-icon>format_underlined</mat-icon></button>
+    <button class="tbtn" title="Strike" (click)="exec('strikeThrough')"><mat-icon>strikethrough_s</mat-icon></button>
+    <div class="sep"></div>
+    <button class="tbtn" title="Left" (click)="exec('justifyLeft')"><mat-icon>format_align_left</mat-icon></button>
+    <button class="tbtn" title="Center" (click)="exec('justifyCenter')"><mat-icon>format_align_center</mat-icon></button>
+    <button class="tbtn" title="Right" (click)="exec('justifyRight')"><mat-icon>format_align_right</mat-icon></button>
+    <button class="tbtn" title="Justify" (click)="exec('justifyFull')"><mat-icon>format_align_justify</mat-icon></button>
+    <div class="sep"></div>
+    <button class="tbtn" title="Bulleted" (click)="exec('insertUnorderedList')"><mat-icon>format_list_bulleted</mat-icon></button>
+    <button class="tbtn" title="Numbered" (click)="exec('insertOrderedList')"><mat-icon>format_list_numbered</mat-icon></button>
+    <div class="sep"></div>
+    <button class="tbtn" title="Link" (click)="makeLink()"><mat-icon>link</mat-icon></button>
+    <div class="sep"></div>
+    <button class="tbtn" title="Clear" (click)="clearFormatting()"><mat-icon>format_clear</mat-icon></button>
+  </div>
+
+  <div
+    #editor
+    class="float-editor"
+    contenteditable="true"
+    (focus)="onEditorFocus()"
+    (blur)="onEditorBlur($event)"
+    (paste)="onPaste($event)"
+    (input)="onInput()"
+    spellcheck="true"
+  ><p><br></p></div>
+</ng-template>
+
+
+<ng-template #floatMode>
+  <div
+    #floatTb
+    class="float-toolbar"
+    *ngIf="showFloatToolbar"
+    [style.left.px]="floatX"
+    [style.top.px]="floatY"
+    (mousedown)="onFloatToolbarMouseDown($event)"
+  >
+    <button class="tbtn" title="Bold" (click)="exec('bold')"><mat-icon>format_bold</mat-icon></button>
+    <button class="tbtn" title="Italic" (click)="exec('italic')"><mat-icon>format_italic</mat-icon></button>
+    <button class="tbtn" title="Underline" (click)="exec('underline')"><mat-icon>format_underlined</mat-icon></button>
+    <button class="tbtn" title="Strike" (click)="exec('strikeThrough')"><mat-icon>strikethrough_s</mat-icon></button>
+    <div class="sep"></div>
+    <button class="tbtn" title="Left" (click)="exec('justifyLeft')"><mat-icon>format_align_left</mat-icon></button>
+    <button class="tbtn" title="Center" (click)="exec('justifyCenter')"><mat-icon>format_align_center</mat-icon></button>
+    <button class="tbtn" title="Right" (click)="exec('justifyRight')"><mat-icon>format_align_right</mat-icon></button>
+    <button class="tbtn" title="Justify" (click)="exec('justifyFull')"><mat-icon>format_align_justify</mat-icon></button>
+    <div class="sep"></div>
+    <button class="tbtn" title="Bulleted" (click)="exec('insertUnorderedList')"><mat-icon>format_list_bulleted</mat-icon></button>
+    <button class="tbtn" title="Numbered" (click)="exec('insertOrderedList')"><mat-icon>format_list_numbered</mat-icon></button>
+    <div class="sep"></div>
+    <button class="tbtn" title="Link" (click)="makeLink()"><mat-icon>link</mat-icon></button>
+    <div class="sep"></div>
+    <button class="tbtn" title="Clear" (click)="clearFormatting()"><mat-icon>format_clear</mat-icon></button>
+  </div>
+
+  <div
+    #editor
+    class="float-editor"
+    contenteditable="true"
+    (focus)="onEditorFocus()"
+    (blur)="onEditorBlur($event)"
+    (paste)="onPaste($event)"
+    (input)="onInput()"
+    spellcheck="true"
+  ><p><br></p></div>
+</ng-template>

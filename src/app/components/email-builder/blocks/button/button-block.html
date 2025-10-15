@@ -1,0 +1,23 @@
+<div class="btn-wrap" [style.text-align]="data.align">
+  <a class="btn"
+     [href]="data.url || '#'"
+     [ngStyle]="{
+       'display': data.fullWidth ? 'block' : 'inline-block',
+       'width': data.fullWidth ? '100%' : null,
+       'text-align': 'center',
+       'background-color': data.bgColor || 'transparent',
+       'color': data.textColor || '#111827',
+       'border-style': 'solid',
+       'border-width.px': data.borderWidth,
+       'border-color': data.borderColor || 'transparent',
+       'border-radius.px': data.borderRadius,
+       'padding': (data.paddingY + 'px ' + data.paddingX + 'px'),
+       'font-weight': data.bold ? 700 : 600,
+       'text-transform': data.uppercase ? 'uppercase' : 'none',
+       'letter-spacing.px': data.letterSpacing,
+       'text-decoration': 'none',
+       'font-family': fontStack(data.fontFamilyKey)
+     }">
+    {{ data.label || 'Button' }}
+  </a>
+</div>

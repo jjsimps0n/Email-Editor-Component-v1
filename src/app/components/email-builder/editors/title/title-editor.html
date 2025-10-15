@@ -1,0 +1,64 @@
+<div class="form-grid">
+
+  <div class="field-text">
+    <label class="label">Text</label>
+    <textarea class="text-input" rows="3"
+              [(ngModel)]="data.text"
+              placeholder="Your Title"></textarea>
+  </div>
+
+  <div class="field">
+    <label class="label">Style</label>
+    <div class="seg">
+      <button mat-icon-button class="seg-btn" [class.on]="data.bold" (click)="toggleBold()" aria-label="Bold">
+        <mat-icon>format_bold</mat-icon>
+      </button>
+      <button mat-icon-button class="seg-btn" [class.on]="data.italic" (click)="toggleItalic()" aria-label="Italic">
+        <mat-icon>format_italic</mat-icon>
+      </button>
+      <button mat-icon-button class="seg-btn" [class.on]="data.underline" (click)="toggleUnderline()" aria-label="Underline">
+        <mat-icon>format_underlined</mat-icon>
+      </button>
+    </div>
+  </div>
+
+  <div class="field">
+    <label class="label">Align</label>
+    <div class="seg">
+      <button mat-icon-button class="seg-btn" [class.on]="data.align==='left'"   (click)="setAlign('left')"   aria-label="Align left">
+        <mat-icon>format_align_left</mat-icon>
+      </button>
+      <button mat-icon-button class="seg-btn" [class.on]="data.align==='center'" (click)="setAlign('center')" aria-label="Align center">
+        <mat-icon>format_align_center</mat-icon>
+      </button>
+      <button mat-icon-button class="seg-btn" [class.on]="data.align==='right'"  (click)="setAlign('right')"  aria-label="Align right">
+        <mat-icon>format_align_right</mat-icon>
+      </button>
+    </div>
+  </div>
+  <div class="field">
+    <label class="label">Font size (px)</label>
+    <input class="text-input small" type="number" min="10" max="96" [(ngModel)]="data.fontSize" />
+  </div>
+  <div class="field">
+    <label class="label">Text color</label>
+    <div class="color-combo">
+      <input class="chip" type="color" [(ngModel)]="data.textColor">
+      <input class="hex"  type="text"  [(ngModel)]="data.textColor" placeholder="#111827">
+    </div>
+  </div>
+  <div class="field">
+    <label class="label">Text bg</label>
+    <div class="color-combo">
+      <input class="chip" type="color" [(ngModel)]="data.textBgColor">
+      <input class="hex"  type="text"  [(ngModel)]="data.textBgColor" placeholder="(none)">
+    </div>
+  </div>
+  <div class="field">
+    <label class="label">Block bg</label>
+    <div class="color-combo">
+      <input class="chip" type="color" [(ngModel)]="data.blockBgColor">
+      <input class="hex"  type="text"  [(ngModel)]="data.blockBgColor" placeholder="(none)">
+    </div>
+  </div>
+</div>

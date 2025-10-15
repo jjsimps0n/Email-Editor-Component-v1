@@ -1,0 +1,113 @@
+:host { display: block; }
+.rte-card{
+  background:#fff;
+  border:1px solid #e6eaf0;
+  border-radius:10px;
+  overflow:hidden;
+}
+
+.rte-toolbar{
+  display:flex; align-items:center; gap:8px;
+  padding:6px 8px;
+  background:#fff;
+  border-bottom:1px solid #e6eaf0;
+}
+.rte-toolbar .grp{ display:inline-flex; align-items:center; gap:6px; }
+
+.rte-toolbar .tb-btn.mat-mdc-icon-button{
+  width:28px; height:28px;
+  --mdc-icon-button-state-layer-size: 28px;
+  border-radius:8px;
+}
+.rte-toolbar .tb-btn.on{
+  background:#ffffff;
+  box-shadow:0 1px 2px rgba(0,0,0,.06);
+}
+.rte-toolbar .mat-icon{ font-size:18px; line-height:18px; }
+
+.rte-toolbar .swatch input[type="color"]{
+  -webkit-appearance: none; appearance: none;
+  width:22px; height:22px; padding:0; border:1px solid #e6eaf0; border-radius:6px; background:#fff;
+}
+
+.rte{
+  min-height:120px;
+  padding:10px;
+  background:#fff;
+  outline:none;
+  font:inherit;
+}
+.rte:focus{
+  box-shadow: inset 0 0 0 2px rgba(37,99,235,.08);
+}
+
+.form-grid{
+  box-sizing: border-box;
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+
+  display: grid;
+  grid-template-columns: 110px minmax(0,1fr);
+  column-gap: 10px;
+  row-gap: 10px;
+  padding: 8px;
+
+  overflow-x: visible;
+}
+.form-grid > * { min-width: 0; }
+.form-grid .text-input,
+.form-grid .hex,
+.form-grid .color-combo { width: 100%; min-width: 0; }
+
+.field-text{ grid-column:1 / -1; }
+.field-text .label{ display:block; padding-bottom:6px; }
+
+.field{ display:contents; }
+
+.label{
+  font-size:11px; color:#64748b; font-weight:600; letter-spacing:.2px;
+  align-self:center;
+}
+
+.text-input{
+  width:100%; min-width:0; box-sizing:border-box;
+  border:1px solid #e6eaf0; border-radius:8px;
+  padding:6px 8px; font:inherit; font-size:12px; color:#0f172a;
+}
+.text-input.small{ height:28px; }
+
+.color-combo{
+  width:100%; min-width:0;
+  display:grid; grid-template-columns:30px 1fr;
+  border:1px solid #e6eaf0; border-radius:8px; overflow:hidden; background:#fff;
+}
+.color-combo .chip{
+  width:30px; height:30px; border:0; padding:0; background:transparent; appearance:none; cursor:pointer;
+}
+.color-combo .hex{
+  border:0; padding:6px 8px; font:inherit; font-size:12px; width:100%; min-width:0; background:transparent;
+}
+
+.btns{
+  width:100%;
+  display:flex; align-items:center;
+  background:#f3f4f6; border:1px solid #e6eaf0; border-radius:10px; padding:2px;
+}
+.btns .mat-mdc-icon-button{
+  flex:1 1 0;
+  width:auto; min-width:0;
+  height:28px;
+  margin:0; padding:0;
+  border-radius:0;
+  display:flex; align-items:center; justify-content:center;
+  --mdc-icon-button-state-layer-size: 28px;
+}
+.btns .mat-mdc-icon-button + .mat-mdc-icon-button{ border-left:1px solid #e6eaf0; }
+.btns .mat-mdc-icon-button:first-child{ border-top-left-radius:8px; border-bottom-left-radius:8px; }
+.btns .mat-mdc-icon-button:last-child { border-top-right-radius:8px; border-bottom-right-radius:8px; }
+.btns .mat-mdc-icon-button.on{
+  background:#fff;
+  box-shadow:0 1px 2px rgba(0,0,0,.06);
+}
+.btns .mat-icon{ font-size:16px; line-height:16px; }

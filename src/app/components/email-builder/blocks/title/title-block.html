@@ -1,0 +1,26 @@
+<h2 class="title"
+    [style.white-space]="'pre-line'"
+    [style.--mobile-font-size.px]="data.mobileFontSize || null"
+    [style.--mobile-align]="data.mobileAlign || null"
+    [ngStyle]="{
+      'text-align': data.align,
+      'font-weight': data.bold ? 700 : 600,
+      'font-style': data.italic ? 'italic' : 'normal',
+      'text-decoration': data.underline ? 'underline' : 'none',
+      'font-size.px': data.fontSize,
+      'line-height': data.lineHeight,
+      'letter-spacing.px': data.letterSpacing,
+      'text-transform': data.textTransform,
+      'color': data.textColor || '#111827',
+      'background-color': data.textBgColor || 'transparent',
+      'font-family': fontStack(data.fontFamilyKey)
+    }">
+  <ng-container *ngIf="data.linkUrl; else plain">
+    <a [href]="data.linkUrl"
+       [style.color]="data.linkColor || 'inherit'"
+       [style.text-decoration]="data.linkUnderline ? 'underline' : 'none'">
+      {{ data?.text || 'Title' }}
+    </a>
+  </ng-container>
+  <ng-template #plain>{{ data?.text || 'Title' }}</ng-template>
+</h2>

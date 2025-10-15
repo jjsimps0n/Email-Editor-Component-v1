@@ -1,0 +1,97 @@
+<div class="rte-card">
+  <div class="rte-toolbar">
+    <div class="grp">
+      <button class="tb-btn" mat-icon-button
+              (mousedown)="$event.preventDefault()"
+              (click)="toggleBold()" [class.on]="isCmdActive('bold')" aria-label="Bold">
+        <mat-icon>format_bold</mat-icon>
+      </button>
+      <button class="tb-btn" mat-icon-button
+              (mousedown)="$event.preventDefault()"
+              (click)="toggleItalic()" [class.on]="isCmdActive('italic')" aria-label="Italic">
+        <mat-icon>format_italic</mat-icon>
+      </button>
+      <button class="tb-btn" mat-icon-button
+              (mousedown)="$event.preventDefault()"
+              (click)="toggleUnderline()" [class.on]="isCmdActive('underline')" aria-label="Underline">
+        <mat-icon>format_underlined</mat-icon>
+      </button>
+    </div>
+
+    <div class="grp">
+      <label class="swatch" title="Text color">
+        <input type="color" #textColor (input)="setTextColor(textColor.value)">
+      </label>
+      <label class="swatch" title="Text background">
+        <input type="color" #bgColor (input)="setBgColor(bgColor.value)">
+      </label>
+    </div>
+
+    <div class="grp">
+      <button class="tb-btn" mat-icon-button
+              (mousedown)="$event.preventDefault()" (click)="makeLink()" aria-label="Add link">
+        <mat-icon>link</mat-icon>
+      </button>
+      <button class="tb-btn" mat-icon-button
+              (mousedown)="$event.preventDefault()" (click)="clearFormatting()" aria-label="Clear formatting">
+        <mat-icon>format_clear</mat-icon>
+      </button>
+    </div>
+  </div>
+
+  <!-- Editor surface -->
+  <div #rte class="rte" contenteditable="true"
+       (input)="onInput()" (paste)="onPaste($event)"></div>
+</div>
+
+<!-- Properties -->
+<div class="form-grid">
+  <div class="field">
+    <label class="label">Align</label>
+    <div class="btns">
+      <button mat-icon-button [class.on]="data.align==='left'"   (click)="data.align='left'"   aria-label="Align left"><mat-icon>format_align_left</mat-icon></button>
+      <button mat-icon-button [class.on]="data.align==='center'" (click)="data.align='center'" aria-label="Align center"><mat-icon>format_align_center</mat-icon></button>
+      <button mat-icon-button [class.on]="data.align==='right'"  (click)="data.align='right'"  aria-label="Align right"><mat-icon>format_align_right</mat-icon></button>
+    </div>
+  </div>
+
+  <div class="field">
+    <label class="label">Font family</label>
+    <select class="text-input" [(ngModel)]="data.fontFamilyKey">
+      <option *ngFor="let f of fontOptions" [ngValue]="f.key">{{ f.label }}</option>
+    </select>
+  </div>
+
+  <div class="field">
+    <label class="label">Font size (px)</label>
+    <input class="text-input" type="number" min="10" max="48" [(ngModel)]="data.fontSize">
+  </div>
+
+  <div class="field">
+    <label class="label">Line height</label>
+    <input class="text-input" type="number" step="0.05" min="1" max="2" [(ngModel)]="data.lineHeight">
+  </div>
+
+  <div class="field">
+    <label class="label">Block padding (px)</label>
+    <input class="text-input" type="number" min="0" max="64" [(ngModel)]="data.blockPadding">
+  </div>
+
+  <div class="field">
+    <label class="label">Block background</label>
+    <div class="color-combo">
+      <input class="chip" type="color" [(ngModel)]="data.blockBgColor">
+      <input class="hex" type="text" [(ngModel)]="data.blockBgColor" placeholder="(none)">
+    </div>
+  </div>
+
+  <div class="field">
+    <label class="label">Margin top (px)</label>
+    <input class="text-input" type="number" min="0" max="100" [(ngModel)]="data.marginTop">
+  </div>
+
+  <div class="field">
+    <label class="label">Margin bottom (px)</label>
+    <input class="text-input" type="number" min="0" max="100" [(ngModel)]="data.marginBottom">
+  </div>
+</div>
